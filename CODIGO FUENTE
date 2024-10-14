@@ -1,0 +1,153 @@
+/*
+    Autor: Aura Regina Ramírez Ramírez
+    Proyecto: De Gramática Regular a Expresión Regular
+    Materia: Lenguajes de Programación
+    Fecha: 13/10/2024
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 1000
+
+typedef struct Nodo
+{
+  char regla[MAX];
+  struct Nodo* sig;
+
+}*NODO;
+
+int crearRegNodo(NODO *nuevo, char* regla)
+{
+  int res=0;
+
+  *nuevo=(NODO)malloc(sizeof(struct Nodo));
+
+  if(*nuevo)
+  {
+    strncpy((*nuevo)->regla, regla, MAX);
+    (*nuevo)->sig=NULL;
+    res=1;
+  }
+
+  return(res);
+
+}
+
+void agregRegNodo(NODO *cab, char* regla)
+{
+    NODO nuevo, aux;
+
+    if(!*cab)
+    {
+        if(crearRegNodo(&nuevo, regla))
+            *cab=nuevo;
+    }
+    else
+    {
+        aux=*cab;
+
+        while(aux->sig)
+            aux=aux->sig;
+
+        if(crearRegNodo(&nuevo, regla))
+            aux->sig = nuevo;
+    }
+}
+
+int leerGrammarFile(NODO *cab, const char* fileName)
+{
+    FILE* file=fopen(fileName, "r");
+    int res=0;
+
+    if(file)
+    {
+        *cab=NULL;
+        char regla[MAX];
+
+        while(fgets(regla, sizeof(regla), file))
+        {
+            regla[strcspn(regla, "\n")]='\0';
+            agregRegNodo(cab, regla);
+        }
+
+        fclose(file);
+        res=1;
+
+    }
+
+    return(res);
+}
+
+void muestraGrammar(NODO cab)
+{
+    NODO aux=cab;
+
+    while(aux)
+    {
+        printf("%s\n", aux->regla);
+        aux=aux->sig;
+    }
+}
+
+void guardarGrammar(NODO cab, const char* fileName)
+{
+    FILE* file=fopen(fileName, "w");
+    NODO aux;
+
+    if(file)
+    {
+        aux=cab;
+
+        while(aux)
+        {
+            fprintf(file, "%s\n", aux->regla);
+            aux=aux->sig;
+        }
+
+        fclose(file);
+        printf("Gramatica guardada en el archivo: %s\n", fileName);
+
+    }
+    else
+        printf("No se pudo abrir el archivo: %s\n", fileName);
+
+}
+
+void freeLista(NODO cab)
+{
+    NODO aux;
+
+    while(cab)
+    {
+        aux=cab;
+        cab=cab->sig;
+        free(aux);
+    }
+}
+
+int main()
+{
+    char fileNameLeer[MAX];
+    char fileNameEscribir[MAX];
+    NODO gramatica=NULL;
+
+    printf("Ingrese el nombre del archivo que desea leer (incluya la extensión): ");
+    scanf("%s", fileNameLeer);
+
+    if(leerGrammarFile(&gramatica, fileNameLeer))
+    {
+        printf("Gramática leída del archivo: \n");
+        muestraGrammar(gramatica);
+
+        printf("Ingrese el nombre del archivo donde desea guardar la gramática (incluya la extensión): ");
+        scanf("%s", fileNameEscribir);
+
+        guardarGrammar(gramatica, fileNameEscribir);
+
+        freeLista(gramatica);
+    }
+    else
+        printf("Error al leer el archivo %s.\n", fileNameLeer);
+}
