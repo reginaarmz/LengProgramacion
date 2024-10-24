@@ -1,15 +1,25 @@
-#include #include #include
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #define MAX_LINE_LENGTH 100
 
-// Node structure for the linked list
-typedef struct Node {
-char *ruleIdentifier;
-char *production;
-struct Node *next;
-} Node;
+// Estructura de Nodo
 
-Node* createNode(const char *ruleIdentifier, const char *production);
-void appendNode(Node **head, const char *ruleIdentifier, const char *production);
-void freeLinkedList(Node *head);
-Node* createLinkedList(FILE *file);
-void printList(Node *head);
+typedef struct NODO {
+char *regla;
+char *prod;
+struct NODO *sig;
+} NODO;
+
+NODO* crearNodo(const char *regla, const char *prod);
+void agregNodo(NODO **cab, const char *regla, const char *prod);
+void liberarLinkedLista(NODO *cab);
+NODO* crearLinkedLista(FILE *file);
+void imprimirLista(NODO *cab);
+
+void dividirLinea(const char *linea, char *regla, char *prod);
+NODO* encontrarNodo(NODO *cab, const char *regla);
+void agregProduc(NODO *nod, const char *prod);
+void agregActNodo(NODO **cab, const char *regla);
+

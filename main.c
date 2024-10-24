@@ -1,86 +1,90 @@
 #include "main.h"
 
-// Function to create a new node
-Node* createNode(const char *ruleIdentifier, const char *production) {
-Node *newNode = (Node *)malloc(sizeof(Node));
-newNode->ruleIdentifier = strdup(ruleIdentifier); // Store rule identifier
-newNode->production = strdup(production); // Store production
-newNode->next = NULL;
-return newNode;
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+//Funcion para crear un nodo
+
+NODO* creaNodo(const char *regla, const char *prod)
+{
+    NODO *nuevoN = (NODO *)malloc(sizeof(NODO));
+    nuevoN->regla= strdup(regla);
+    nuevoN->prod= strdup(prod);
+    nuevoN->sig= NULL;
+
+    return(nuevoN);
 }
 
-// Function to append a node to the linked list
-void appendNode(Node **head, const char *ruleIdentifier, const char *production) {
-Node *newNode = createNode(ruleIdentifier, production);
-if (*head == NULL) {
-*head = newNode;
-} else {
-Node *temp = *head;
-while (temp->next != NULL) {
-temp = temp->next;
-}
-temp->next = newNode;
-}
-}
+//Función para encontar un nodo por regla identidad
 
-// Function to free the linked list
-void freeLinkedList(Node *head) {
-Node *current = head;
-Node *nextNode;
-while (current != NULL) {
-nextNode = current->next;
-free(current->ruleIdentifier); // Free the rule identifier string
-free(current->production); // Free the production string
-free(current); // Free the node
-current = nextNode;
-}
+NODO* encontrarNodo(NODO *cab, const char *regla)
+{
+    NODO *actual=cab;
+
+    while(actual)
+    {
+        if(strcmp(actual->regla, regla)==0)
+            return(actual);
+        
+        actual= actual->sig;
+    }
+    return(NULL); //se retorna NULL si no lo encontró
+
 }
 
-// Function to create a linked list from the file
-Node* createLinkedList(FILE *file) {
-Node *head = NULL; // Head of the linked list
-char line[MAX_LINE_LENGTH];
-char ruleIdentifier[MAX_LINE_LENGTH];
-char production[MAX_LINE_LENGTH];
+//Funcion para agregar producción 
 
-// Read the file line by line and store each line in a new node
-while (fgets(line, sizeof(line), file)) {
-// Remove the newline character if present
-line[strcspn(line, "\n")] = '\0';
+void agregProduc(NODO *nod, const char *prod)
+{
+    size_t nuevoTam= strlen(nod->prod) + strlen(prod) + 4;
+    nod->prod= (char *)realloc(nod->prod, nuevoTam);
 
-// Append the split line to the linked list
-// appendNode(&head, ruleIdentifier, production);
-appendNode(&head, "", line);
+    strcat(nod->prod, " | ");
+    strcat(nod->prod, prod);
+
 }
 
-return head;
+//Función para agregar un nuevo nodo o actualizar uno existente
+
+void agregActNodo(NODO **cab, const char *regla, const char *prod)
+{
+    NODO *exisNodo= encontrarNodo(*cab, regla);
+
+    if(exisNodo)
+    {
+        agregProduc(exisNodo, prod); //Si lo encontró, agrega la producción
+    }
+    else{
+        NOO *nuevoN= creaNodo(regla, prod);
+
+        if(!*cab)
+            *cab= nuevoN;
+        else{
+            NODO *aux=*cab;
+
+            while (aux->sig)
+            {
+                aux=aux->sig;
+            }
+
+            aux->sig= nuevoN;
+            
+        }
+    }
 }
 
-// Function to print the linked list
-void printList(Node *head) {
-Node *current = head;
-while (current != NULL) {
-printf("Identifier: %s, Production: %s\n", current->ruleIdentifier, current->production);
-current = current->next;
-}
-}
+//Funcion para librerar un linked de la lista
 
-int main() {
-FILE *file = fopen("gramatica1.txt", "r");
-if (file == NULL) {
-perror("Error opening file");
-return 1;
-}
+void liberarLinkedLista(NODO *cab)
+{
+    NODO *actual= cab;
+    NODO *sigNodo;
 
-Node *head = createLinkedList(file);
-
-fclose(file);
-
-// Output the contents of the linked list
-printList(head);
-
-// Free the linked list
-freeLinkedList(head);
-
-return 0;
+    while (actual)
+    {
+        sigNodo= actual->sig;
+        free(actual->regla);
+    }
+    
 }
