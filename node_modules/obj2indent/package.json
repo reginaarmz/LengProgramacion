@@ -1,0 +1,48 @@
+{
+  "name": "obj2indent",
+  "version": "0.0.1",
+  "description": "Convert a JavaScript object to a string used the indentation.",
+  "keywords": [
+    "indent2obj",
+    "string",
+    "tree",
+    "object",
+    "util",
+    "server",
+    "client",
+    "browser"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tsuyoshiwada/obj2indent.git"
+  },
+  "main": "obj2indent.js",
+  "author": {
+    "name": "tsuyoshiwada",
+    "url": "https://github.com/tsuyoshiwada"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsuyoshiwada/obj2indent/issues"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "homepage": "https://github.com/tsuyoshiwada/obj2indent",
+  "devDependencies": {
+    "coffee-script": "^1.9.3",
+    "gulp": "^3.9.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-load-plugins": "^1.0.0-rc.1",
+    "gulp-plumber": "^1.0.1",
+    "gulp-qunit": "^1.2.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0",
+    "jshint-stylish": "^2.0.1"
+  },
+  "files": [
+    "obj2indent.js",
+    "obj2indent.min.js",
+    "LICENSE"
+  ]
+}

@@ -85,6 +85,33 @@ void liberarLinkedLista(NODO *cab)
     {
         sigNodo= actual->sig;
         free(actual->regla);
+        free(actual->prod);
+        free(actual);
+        actual= sigNodo;
     }
     
+}
+
+//Función para dividir una línea en identificador de regla y producción
+
+void dividirLine(const char *linea, char *regla, char *prod)
+{
+    //Encontrar la posición de "->" en la linea
+    const char *delimite=strstr(linea, "->");
+    if(delimite)
+    {
+        //Copiar la parte anterior "->" en la regla
+        strncpy(regla, linea, delimite-linea);
+        regla[delimite-linea]='\0'; 
+
+        //Copiar la parte despues "->" en la producción
+        strcpy(prod, delimite+2); //Skip the "->"
+    }
+}
+
+//Función para crear un linked list para el archivo
+
+NODO* crearLinkedList(FILE *file)
+{
+    NODO *cab=NULL;
 }
